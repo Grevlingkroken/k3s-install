@@ -93,17 +93,6 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 
 
-### Built With
-
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -160,7 +149,7 @@ When done you can convert the VM to a template
 ```sh 
 sudo qm template 9000
 ```
-Getting VMs ready for k3s
+### Getting VMs ready for k3s
 
 When deploying a lab cluster I normally deploy a single control plane and two workers. For lager project I prefer to have three control plane nodes which give me a High Availability of the etcd database. For the sake of it I will deploy the latter in this example. I also add static IPs in my VLAN100
 
