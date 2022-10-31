@@ -160,8 +160,29 @@ When done you can convert the VM to a template
 ```sh 
 sudo qm template 9000
 ```
+# Getting VMs ready for k3s
 
+When deploying a lab cluster I normally deploy a single control plane and two workers. For lager project I prefer to have three control plane nodes which give me a High Availability of the etcd database. For the sake of it I will deploy the latter in this example. I also add static IPs in my VLAN100
 
+```sh 
+sudo qm clone 9000 600 --name k3s-ctrl01
+sudo qm set 600 --ipconfig0 ip=10.0.100.10/24,gw=10.0.100.1
+sudo qm clone 9000 601 --name k3s-ctrl02
+sudo qm set 601 --ipconfig0 ip=10.0.100.11/24,gw=10.0.100.1
+sudo qm clone 9000 602 --name k3s-ctrl03
+sudo qm set 602 --ipconfig0 ip=10.0.100.12/24,gw=10.0.100.1
+sudo qm clone 9000 603 --name k3s-worker01
+sudo qm set 603 --ipconfig0 ip=10.0.100.13/24,gw=10.0.100.1
+sudo qm clone 9000 604 --name k3s-worker02
+sudo qm set 604 --ipconfig0 ip=10.0.100.14/24,gw=10.0.100.1
+sudo qm clone 9000 605 --name k3s-worker03
+sudo qm set 600 --ipconfig0 ip=10.0.100.15/24,gw=10.0.100.1
+```
+If you need a full clone rather than a linked clone (liked clone will lock the template, eg you are not able to delete it) you will need to specify this when cloning
+
+```sh
+sudo qm clone 9000 600 --name k3s-ctrl01 --full
+```
 ### Installation
 
 1. Get a free API Key at [https://example.com](https://example.com)
