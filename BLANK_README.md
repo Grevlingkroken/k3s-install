@@ -140,6 +140,26 @@ For lab/testing I don't bother too much with ssh keys, but enable enable Passwor
 ```sh 
 sudo virt-customize -a jammy-server-cloudimg-amd64.img --run-command "sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config" 
 ```
+Now the image should be ready for creating a reasonably good template. For the sake of it I use 2GB ram and 2vCPUs. Feel free to adjust as needed.
+The image is only 2.2GB by default, thus I chose to add 13GB as I need this for Kubernetes
+
+```sh 
+sudo qm create 9000 --name "ubuntu-2204-cloudinit-template" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
+sudo qm importdisk 9000 jammy-server-cloudimg-amd64.img local-zfs [replace locala-zfs if you use a different datastore]
+sudo qm set 9000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-9000-disk-0
+sudo qm set 9000 --boot c --bootdisk scsi0
+sudo qm set 9000 --ide2 local-lvm:cloudinit
+sudo qm set 9000 --serial0 socket --vga serial0
+sudo qm set 9000 --agent enabled=1
+sudo qm resize 9000 scsi0 +13G 
+```
+Now the image should be present in Proxmox, and you can edit a few items. For my purpose I add username and password in Cloud Init. I also add a VLAN tag under network properties.
+
+When done you can convert the VM to a template
+
+```sh 
+sudo qm template 9000
+```
 
 
 ### Installation
