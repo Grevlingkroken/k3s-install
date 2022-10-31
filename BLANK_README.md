@@ -106,7 +106,6 @@ Cloud init part.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
 * Required packages to build Cloud init templates
   ```sh
   apt install cloud-init libguestfs-tools
