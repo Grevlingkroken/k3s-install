@@ -145,7 +145,7 @@ The image is only 2.2GB by default, thus I chose to add 13GB as I need this for 
 
 ```sh 
 sudo qm create 9000 --name "ubuntu-2204-cloudinit-template" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
-sudo qm importdisk 9000 jammy-server-cloudimg-amd64.img local-zfs [replace locala-zfs if you use a different datastore]
+sudo qm importdisk 9000 jammy-server-cloudimg-amd64.img local-lvm [replace local-lvm if you have a different name for your datastore]
 sudo qm set 9000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-9000-disk-0
 sudo qm set 9000 --boot c --bootdisk scsi0
 sudo qm set 9000 --ide2 local-lvm:cloudinit
@@ -160,7 +160,7 @@ When done you can convert the VM to a template
 ```sh 
 sudo qm template 9000
 ```
-# Getting VMs ready for k3s
+Getting VMs ready for k3s
 
 When deploying a lab cluster I normally deploy a single control plane and two workers. For lager project I prefer to have three control plane nodes which give me a High Availability of the etcd database. For the sake of it I will deploy the latter in this example. I also add static IPs in my VLAN100
 
@@ -228,21 +228,6 @@ See the [open issues](https://github.com/github_username/repo_name/issues) for a
 
 
 
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -255,14 +240,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 
 
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
-
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
