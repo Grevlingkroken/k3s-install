@@ -122,7 +122,23 @@ This is an example of how to list things you need to use the software and how to
   ```sh
   apt install cloud-init libguestfs-tools
   ```
+For this project I have use a readily available Cloud image of Ubuntu 22.04, available from Ubuntu
+```sh
+  wget https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+  ```
+This image works well for me, but feel free to give other images a spin
 
+# Install qemu-guest-agent and nano on the Ubuntu image:
+```sh
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --install qemu-guest-agent
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --install nano
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --install mc 
+```
+For lab/testing I don't bother too much with ssh keys, but enable enable PasswordAuthentication
+
+
+```sh 
+sudo virt-customize -a jammy-server-cloudimg-amd64.img --run-command "sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config" ```
 
 
 ### Installation
