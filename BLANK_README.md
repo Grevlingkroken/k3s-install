@@ -34,7 +34,7 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">project_title</h3>
+<h3 align="center">Easy install of k3s using Proxmox and Ubuntu</h3>
 
   <p align="center">
     project_description
@@ -100,9 +100,7 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 <!-- GETTING STARTED -->
 ## Getting Started
 
-I base most of my current projects on Proxmox. Proxmox is easy to install and can run fine on relatively outdated hardware.
-Current installation is using the 7.2.x branch. For other releases you might have to tweak some of the instructions to get started with the
-Cloud init part.
+I base most of my current projects on Proxmox 7.2.x. Proxmox is easy to install and can run fine on relatively outdated hardware, and as it is based on Debian it is rather familiar to me.
 
 ### Prerequisites
 
@@ -110,7 +108,7 @@ Cloud init part.
   ```sh
   apt install cloud-init libguestfs-tools
   ```
-For this project I have use a readily available Cloud image of Ubuntu 22.04, available from Ubuntu
+For this project I have use a readily available Cloud image of Ubuntu 22.04 LTS (Jammy)
 ```sh
   wget https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
   ```
@@ -154,23 +152,34 @@ When deploying a lab cluster I normally deploy a single control plane and two wo
 
 ```sh 
 sudo qm clone 9000 600 --name k3s-ctrl01
-sudo qm set 600 --ipconfig0 ip=10.0.100.10/24,gw=10.0.100.1
+sudo qm set 600 --ipconfig0 ip=10.0.100.11/24,gw=10.0.100.1
 sudo qm clone 9000 601 --name k3s-ctrl02
-sudo qm set 601 --ipconfig0 ip=10.0.100.11/24,gw=10.0.100.1
+sudo qm set 601 --ipconfig0 ip=10.0.100.12/24,gw=10.0.100.1
 sudo qm clone 9000 602 --name k3s-ctrl03
-sudo qm set 602 --ipconfig0 ip=10.0.100.12/24,gw=10.0.100.1
+sudo qm set 602 --ipconfig0 ip=10.0.100.13/24,gw=10.0.100.1
 sudo qm clone 9000 603 --name k3s-worker01
-sudo qm set 603 --ipconfig0 ip=10.0.100.13/24,gw=10.0.100.1
+sudo qm set 603 --ipconfig0 ip=10.0.100.14/24,gw=10.0.100.1
 sudo qm clone 9000 604 --name k3s-worker02
-sudo qm set 604 --ipconfig0 ip=10.0.100.14/24,gw=10.0.100.1
+sudo qm set 604 --ipconfig0 ip=10.0.100.15/24,gw=10.0.100.1
 sudo qm clone 9000 605 --name k3s-worker03
-sudo qm set 600 --ipconfig0 ip=10.0.100.15/24,gw=10.0.100.1
+sudo qm set 600 --ipconfig0 ip=10.0.100.16/24,gw=10.0.100.1
 ```
 If you need a full clone rather than a linked clone (liked clone will lock the template, eg you are not able to delete it) you will need to specify this when cloning
 
 ```sh
 sudo qm clone 9000 600 --name k3s-ctrl01 --full
 ```
+If done right you should have 6 fully working VMs ready for Kubernetes.
+
+We'll start of with creating the first Controller plane node on the first VM. The cluster will have a load balanced address of 10.0.100.10 (created later) and in this example a predefined token.
+
+```sh
+curl -sfL https://get.k3s.io | sh -s - server \
+--token=78qrq0.1sr26zankoh22ou7 \
+--tls-san k3s-demo.local --tls-san 10.0.100.10 \
+--cluster-init
+```
+
 ### Installation
 
 1. Get a free API Key at [https://example.com](https://example.com)
