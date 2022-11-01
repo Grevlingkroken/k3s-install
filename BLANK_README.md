@@ -171,7 +171,7 @@ sudo qm clone 9000 600 --name k3s-ctrl01 --full
 ```
 If done right you should have 6 fully working VMs ready for Kubernetes.
 
-We'll start of with creating the first Controller plane node on the first VM. The cluster will have a load balanced address of 10.0.100.10 (created later) and in this example a predefined token.
+We'll start of with creating the first Control plane node on the first VM. The cluster will have a load balanced address of 10.0.100.10 (created later) and in this example a predefined token.
 
 ```sh
 curl -sfL https://get.k3s.io | sh -s - server \
