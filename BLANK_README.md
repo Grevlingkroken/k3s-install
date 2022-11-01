@@ -152,17 +152,17 @@ When deploying a lab cluster I normally deploy a single control plane and two wo
 
 ```sh 
 sudo qm clone 9000 600 --name k3s-ctrl01
-sudo qm set 600 --ipconfig0 ip=10.0.100.11/24,gw=10.0.100.1
+sudo qm set 600 --ipconfig0 ip=10.0.100.101/24,gw=10.0.100.1
 sudo qm clone 9000 601 --name k3s-ctrl02
-sudo qm set 601 --ipconfig0 ip=10.0.100.12/24,gw=10.0.100.1
+sudo qm set 601 --ipconfig0 ip=10.0.100.102/24,gw=10.0.100.1
 sudo qm clone 9000 602 --name k3s-ctrl03
-sudo qm set 602 --ipconfig0 ip=10.0.100.13/24,gw=10.0.100.1
+sudo qm set 602 --ipconfig0 ip=10.0.100.103/24,gw=10.0.100.1
 sudo qm clone 9000 603 --name k3s-worker01
-sudo qm set 603 --ipconfig0 ip=10.0.100.14/24,gw=10.0.100.1
+sudo qm set 603 --ipconfig0 ip=10.0.100.104/24,gw=10.0.100.1
 sudo qm clone 9000 604 --name k3s-worker02
-sudo qm set 604 --ipconfig0 ip=10.0.100.15/24,gw=10.0.100.1
+sudo qm set 604 --ipconfig0 ip=10.0.100.105/24,gw=10.0.100.1
 sudo qm clone 9000 605 --name k3s-worker03
-sudo qm set 600 --ipconfig0 ip=10.0.100.16/24,gw=10.0.100.1
+sudo qm set 600 --ipconfig0 ip=10.0.100.106/24,gw=10.0.100.1
 ```
 If you need a full clone rather than a linked clone (liked clone will lock the template, eg you are not able to delete it) you will need to specify this when cloning
 
@@ -171,14 +171,47 @@ sudo qm clone 9000 600 --name k3s-ctrl01 --full
 ```
 If done right you should have 6 fully working VMs ready for Kubernetes.
 
-We'll start of with creating the first Control plane node on the first VM. The cluster will have a load balanced address of 10.0.100.10 (created later) and in this example a predefined token.
+## Installing k3s
+
+We'll start of with creating the first Control plane node on the first VM. The cluster will have a load balanced address of 10.0.100.110 (created later) and in this example a predefined token.
 
 ```sh
 curl -sfL https://get.k3s.io | sh -s - server \
 --token=78qrq0.1sr26zankoh22ou7 \
---tls-san k3s-demo.local --tls-san 10.0.100.10 \
+--tls-san YOUR_IP_OR_HOSTNAME_HERE  \
 --cluster-init
 ```
+### SSL Certificates
+To avoid certificate errors in such a configuration, you should install the server with the `--tls-san YOUR_IP_OR_HOSTNAME_HERE` option. This option adds an additional hostname or IP as a Subject Alternative Name in the TLS cert, and it can be specified multiple times if you would like to access via both the IP and the hostname.
+
+Having multiple control-plane nodes without load balancing incoming connection is rather useless. An easy solution for me was another VM with Docker and NGnix.
+
+If you want to add more control-plane nodes
+```sh
+curl -sfL https://get.k3s.io | sh -s - server \
+--token=78qrq0.1sr26zankoh22ou7 \
+--tls-san k3s-demo.local  \
+--server https://your-lb-ip-address:6443
+```
+### Adding worker nodes
+
+Find the token from the first control-plane node
+```sh
+cat  /var/lib/rancher/k3s/server/node-token
+```
+Proceed to the first worker node
+
+### Install Agents
+You can add additional nodes without a server function to this cluster by adding the parameter `-agent`.
+```sh
+curl -sfL https://get.k3s.io | sh -s - agent \
+--server https://your-lb-ip-address:6443 \
+--token YOUR-SECRET
+```
+
+# To be continued #
+
+
 
 ### Installation
 
